@@ -1,0 +1,18 @@
+---
+# 下载 redis
+- name: 判断 redis 源文件是否已经下载好了
+  command: ls {{ redis_download_dest }}
+  become: true
+  ignore_errors: true
+  register: file_exist
+  connection: local
+
+- name: 下载文件
+  get_url:
+    url: "{{ redis_download_url}}"
+    dest: "{{ redis_download_dest }}"
+    force: yes
+  when: file_exist|failed
+  connection: local
+
+

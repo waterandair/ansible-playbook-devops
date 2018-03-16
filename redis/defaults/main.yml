@@ -1,0 +1,17 @@
+---
+# defaults file for redis
+## 安装相关
+redis_version: 4.0.8
+redis_download_url: "http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+redis_download_dest: /usr/local/src/redis-{{ redis_version }}.tar.gz
+redis_install_dir: /usr/local/
+# 设置持久化文件的存储位置
+redis_dir: /var/redis/{{ redis_port }}
+# 设置 redis 用户和组
+redis_user: redis
+redis_group: "{{ redis_user }}"
+# 端口和密码
+redis_port: 6379
+redis_password: false
+# redis pid 文件的存放路径
+redis_pidfile: /var/run/redis/{{ redis_port }}.pid

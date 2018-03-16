@@ -1,0 +1,23 @@
+---
+#- name: 复制redis源码到目标远程服务器, 并解压
+#  command: tar -zxvf {{ redis_download_dest }} -C {{ redis_install_dir }}
+#  become: true
+#  connection: local
+- name: 解压
+  unarchive:
+    src: "{{ redis_download_dest }}"
+    dest: "{{ redis_install_dir }}"
+  become: true
+
+#- name: 安装 gcc
+#  apt:
+#   name: gcc
+#
+#- name: 安装 make
+#  apt:
+#   name: make
+
+- name: 执行 make (4.0.8版本只执行make就可以了)
+  command: make MALLOC=libc
+  args:
+    chdir: "{{ redis_install_dir + 'redis-' + redis_version }}"

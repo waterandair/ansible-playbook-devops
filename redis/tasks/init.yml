@@ -1,0 +1,34 @@
+---
+# 配置自动启动
+- name: 创建存放配置文件的目录 /etc/redis
+  file:
+    path: /etc/redis
+    state: directory
+
+- name: 创建redis持久化文件的目录
+  file:
+    path: /var/redis/6379
+    state: directory
+
+- name: 把启动脚本移动 /etc/init.d 目录下
+  template:
+    src: redis.j2
+    dest: /etc/init.d/redis
+    mode: 755
+
+- name: 把配置文件移动到 /etc/redis 目录中,改名为 6379.conf
+  template:
+    src: 6379.conf.j2
+    dest: /etc/redis/6379.conf
+
+- name: 把 redis-server 移动到目录 /usr/local/bin
+  command: cp --remove-destination {{ redis_install_dir + 'redis-' +redis_version + '/src/redis-server' }} /usr/local/bin/
+
+- name: 把 redis-cli 移动到目录 /usr/local/bin
+  command: cp --remove-destination {{ redis_install_dir + 'redis-' +redis_version + '/src/redis-cli' }} /usr/local/bin/
+
+- name: 执行 update-rc.d redis defaults
+  command: update-rc.d redis defaults
+
+- name: 启动redis
+  command: service redis start

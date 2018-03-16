@@ -1,0 +1,6 @@
+- hosts: redis
+  remote_user: root
+  become: true
+  become_user: root
+  roles:
+  - redis
