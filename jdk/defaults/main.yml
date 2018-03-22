@@ -1,0 +1,12 @@
+---
+# defaults file for jdk
+# jdk 的版本
+jdk_version: jdk-9.0.4
+# jdk 文件较大,建议提前下好,并放到 jdk/files/ 目录下
+jdk_package_name: jdk-9.0.4_linux-x64_bin.tar.gz
+# 设置环境变量的文件
+env_file: ~/.bashrc
+# 安装目录
+install_dir: /usr/local/
+# 软连接地址
+soft_dir: "{{ install_dir }}java"
