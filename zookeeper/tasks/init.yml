@@ -1,0 +1,40 @@
+---
+- name: 创建软连接
+  file:
+    src: "{{ install_dir + 'zookeeper-' + zookeeper_version}}"
+    dest: "{{ soft_dir }}"
+    state: link
+
+- name: 设置zookeeper环境变量
+  lineinfile:
+    dest: "{{env_file}}"
+    insertafter: "{{item.position}}"
+    line: "{{item.value}}"
+    state: present
+  with_items:
+    - {position: EOF, value: "\n"}
+    - {position: EOF, value: "{{ 'export ZOOKEEPER_HOME=' + soft_dir }}"}
+    - {position: EOF, value: "export PATH=$ZOOKEEPER_HOME/bin:$PATH"}
+
+#- name: 使设置的环境变量生效
+#  shell: source {{env_file}}
+#  args:
+#     executable: /bin/bash
+
+- name: 设置配置文件
+  template:
+    src: zoo_sample.cfg.j2
+    dest: "{{ soft_dir + '/conf/zoo.cfg' }}"
+
+- name: 设置服务器标识
+  lineinfile:
+    dest: "{{zookeeper_data_dir + 'myid'}}"
+    line: "{{ id }}"
+    create: yes
+    state: present
+
+# 这里启动需要指定 zookeeper 和 java 的路径
+- name: 启动 zookeeper 服务器
+  shell: zkServer.sh start
+  environment:
+    PATH: /usr/local/zookeeper/bin:/usr/local/java/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

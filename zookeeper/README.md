@@ -15,7 +15,7 @@ run.yml
 - hosts: test
   remote_user: root
   roles:
-    - kafka
+    - zookeeper
 ```
 ##### 3. 执行  
 
@@ -24,4 +24,4 @@ run.yml
 ansible-playbook -i hosts run.yml -k
 ```
 
-##### [详细介绍](http://waterandair.top/install-kafka.html)
+##### [详细介绍](http://waterandair.top/install-zookeeper.html)

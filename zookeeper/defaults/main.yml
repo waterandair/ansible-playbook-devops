@@ -1,0 +1,16 @@
+---
+# defaults file for zookeeper
+# 版本
+zookeeper_version: 3.4.10
+# 下载地址
+zookeeper_download_url: "http://mirrors.shu.edu.cn/apache/zookeeper/stable/zookeeper-{{ zookeeper_version }}.tar.gz"
+# 下载到本地的 ~/Downloads
+zookeeper_download_dest: ~/Downloads/zookeeper-{{ zookeeper_version }}.tar.gz
+# 安装目录
+install_dir: /usr/local/
+# 软连接地址
+soft_dir: "{{ install_dir }}zookeeper"
+# zookeeper 快照文件目录
+zookeeper_data_dir: /var/zookeeper/
+# 设置环境变量的文件
+env_file: ~/.bashrc
