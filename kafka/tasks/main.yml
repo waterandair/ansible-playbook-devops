@@ -1,0 +1,4 @@
+---
+# tasks file for kafka
+- import_tasks: download.yml
+- import_tasks: init.yml

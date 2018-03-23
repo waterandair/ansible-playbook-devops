@@ -1,0 +1,23 @@
+---
+# defaults file for zookeeper
+# kafka 版本
+kafka_version: "1.0.1"
+scala_version: "2.12"
+scala_kafka_version: "{{ 'kafka_' + scala_version + '-' + kafka_version }}"
+# 下载地址
+kafka_download_url: "http://mirrors.hust.edu.cn/apache/kafka/{{ kafka_version }}/{{ scala_kafka_version }}.tgz"
+# 下载到本地的 ~/Downloads
+kafka_download_dest: ~/Downloads/{{ scala_kafka_version }}.tgz
+
+# 安装目录
+kafka_install_dir: /usr/local/
+# kafka 目录
+kafka_dir: "/usr/local/kafka_{{ scala_version }}-{{ kafka_version }}"
+# kafka 目录软链接
+soft_dir: /usr/local/kafka
+# kafka 配置文件目录
+kafka_conf_dir: "{{ soft_dir }}/config/"
+# kafka 持久化目录
+kafka_log_dir: /var/kafka
+# 设置环境变量
+env_file: ~/.bashrc

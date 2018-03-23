@@ -1,0 +1,20 @@
+---
+# 下载 kafka
+- name: 判断 kafka 源文件是否已经下载好了
+  command: ls {{ kafka_download_dest }}
+  ignore_errors: true
+  register: file_exist
+  connection: local
+
+- name: 下载文件
+  get_url:
+    url: "{{ kafka_download_url}}"
+    dest: "{{ kafka_download_dest }}"
+    force: yes
+  when: file_exist|failed
+  connection: local
+
+- name: 解压
+  unarchive:
+    src: "{{ kafka_download_dest }}"
+    dest: "{{ kafka_install_dir }}"

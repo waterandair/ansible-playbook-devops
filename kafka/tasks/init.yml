@@ -1,0 +1,29 @@
+---
+- name: 创建 kafka 的软链接
+  file:
+    src: "{{ kafka_dir }}"
+    dest: "{{ soft_dir }}"
+    state: link
+
+- name: 设置 kafka 环境变量
+  lineinfile:
+    dest: "{{env_file}}"
+    insertafter: "{{item.position}}"
+    line: "{{item.value}}"
+    state: present
+  with_items:
+    - {position: EOF, value: "\n"}
+    - {position: EOF, value: "{{ 'export KAFKA_HOME=' + soft_dir }}"}
+    - {position: EOF, value: "export PATH=$KAFKA_HOME/bin:$PATH"}
+
+- name: 设置配置文件
+  template:
+    src: server.properties.j2
+    dest: "{{ kafka_conf_dir + 'server.properties' }}"
+    force: yes
+
+- name: 启动 kafka 服务器
+  shell: "{{ 'kafka-server-start.sh' + ' -daemon ' + kafka_conf_dir + 'server.properties' }}"
+  environment:
+    PATH: /usr/local/kafka/bin:/usr/local/zookeeper/bin:/usr/local/java/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    KAFKA_HOME: usr/local/kafka
