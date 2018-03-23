@@ -12,7 +12,8 @@ linux 集群用 docker 创建的三个 linux 容器模拟
 **容器用户名/密码:** root/root
 
 ### 二 使用
-#### 1. [java(jdk)](https://github.com/waterandair/ansible-playbook-devops/blob/master/jdk/README.md)
+####  [java(jdk)](https://github.com/waterandair/ansible-playbook-devops/blob/master/jdk/README.md) 
+####  [zookeeper](https://github.com/waterandair/ansible-playbook-devops/blob/master/zookeeper/README.md) 
 
 
 
