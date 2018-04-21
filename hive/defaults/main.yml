@@ -1,0 +1,32 @@
+---
+# defaults file for zookeeper
+# 版本
+hive_version: 2.3.3
+# 下载地址
+hive_download_url: "https://mirrors.tuna.tsinghua.edu.cn/apache/hive/stable-2/apache-hive-{{ hive_version }}-bin.tar.gz"
+# 下载到本地的 ~/Downloads
+hive_download_dest: ~/Downloads/apache-hive-{{ hive_version }}-bin.tar.gz
+# 下载 mysql-connector 地址
+mysql_connector_name: mysql-connector-java-5.1.46
+mysql_connector_url: "https://dev.mysql.com/get/Downloads/Connector-J/{{ mysql_connector_name }}.tar.gz"
+mysql_connector_download_dest: ~/Downloads/{{ mysql_connector_name }}.tar.gz
+# 安装目录
+install_dir: /usr/local/
+# 软连接地址
+soft_dir: "{{ install_dir }}hive"
+# 设置环境变量的文件
+env_file: /etc/profile
+# 部分操作要在 hosts 中设置 hive 为 yes 时才能执行
+hive: no
+# hive 配置目录
+hive_conf_dir: "{{ soft_dir }}/conf/"
+hive_lib_dir: "{{ install_dir }}apache-hive-{{ hive_version }}-bin/lib/"
+
+# 配置相关
+# mysql 元数据管理 注意字符编码必须是 latin1
+mysql_metadata_url: jdbc:mysql://192.168.1.102:3306/docker_hive_metadata?createDatabaseIfNotExist=true&amp;useSSL=false&amp;useUnicode=true&amp;characterEncoding=latin1
+# mysql 用户
+mysql_user: root
+# mysql 密码
+mysql_password: '000000'
+hive_metastore_uris: thrift://172.17.0.2:9083

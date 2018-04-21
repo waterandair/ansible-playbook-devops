@@ -1,0 +1,55 @@
+---
+# 把文件下载到本地
+- name: 判断 hive 源文件是否已经下载好了
+  command: ls {{ hive_download_dest }}
+  ignore_errors: true
+  register: file_exist
+  connection: local
+
+- name: 下载文件
+  get_url:
+    url: "{{ hive_download_url}}"
+    dest: "{{ hive_download_dest }}"
+    force: yes
+  when: file_exist|failed
+  connection: local
+
+# 解压到远程服务器的安装目录
+- name: 解压
+  unarchive:
+    src: "{{ hive_download_dest }}"
+    dest: "{{ install_dir }}"
+  become: true
+
+
+- name: 判断 mysql connecrtor 源文件是否已经下载好了
+  command: ls {{ mysql_connector_download_dest }}
+  ignore_errors: true
+  register: file_exist
+  connection: local
+
+- name: 下载文件
+  get_url:
+    url: "{{ mysql_connector_url}}"
+    dest: "{{ mysql_connector_download_dest }}"
+    force: yes
+  when: file_exist|failed
+  connection: local
+
+# 解压到远程服务器的安装目录
+- name: 解压 mysql-connector-java-5.1.46.tar.gz
+  unarchive:
+    src: "{{ mysql_connector_download_dest }}"
+    dest: "{{ install_dir }}"
+  become: true
+
+- name: 移动　mysql-connector-java-5.1.46-bin.jar 到 hive 下的 lib 目录中
+  shell: "mv {{ install_dir + mysql_connector_name + '/' + mysql_connector_name + '-bin.jar' }} {{ hive_lib_dir }}"
+  become: true
+
+- name: 删除 mysql-connector-java-5.1.46 文件夹
+  shell: "rm -rf {{ install_dir + mysql_connector_name }}"
+  become: true
+
+
+

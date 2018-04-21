@@ -1,0 +1,104 @@
+---
+# tasks file for ./hadoop
+# install hadoop
+
+- name: 安装依赖 pdsh
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+  - pdsh
+
+- name: 创建 rcmd_default 配置文件
+  file:
+    path: /etc/pdsh/rcmd_default
+    state: touch
+
+- name: 写入 rcmd_default ssh
+  shell: echo "ssh" > /etc/pdsh/rcmd_default
+
+- name: 创建 hadoop 软连接
+  file: 
+    src: /usr/local/hadoop-{{ hadoop_version }}
+    dest: /usr/local/hadoop
+    state: link
+
+- name: 创建 hadoop logs 目录
+  file:
+    path: /usr/local/hadoop/logs
+    mode: 0755
+    state: directory
+
+- name: 设置 hadoop 相关环境变量
+  lineinfile:
+    dest: "{{env_file}}"
+    insertafter: "{{item.position}}"
+    line: "{{item.value}}"
+    state: present
+  with_items:
+  - {position: EOF, value: "\n"}
+  - {position: EOF, value: "# hadoop environment"}
+  - {position: EOF, value: "export HADOOP_HOME=/usr/local/hadoop"}
+  - {position: EOF, value: "export PATH=$PATH:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin"}
+  - {position: EOF, value: "export HADOOP_LOG_DIR=${HADOOP_HOME}/logs"}
+  - {position: EOF, value: "export YARN_RESOURCEMANAGER_USER=root"}
+  - {position: EOF, value: "export YARN_NODEMANAGER_USER=root"}
+  - {position: EOF, value: "export HDFS_NAMENODE_USER=root"}
+  - {position: EOF, value: "export HDFS_DATANODE_USER=root"}
+  - {position: EOF, value: "export HDFS_SECONDARYNAMENODE_USER=root"}
+  - {position: EOF, value: "export HADOOP_MAPRED_HOME=${HADOOP_HOME}"}
+
+# 配置 hadoop
+- name: 配置 hadoop-env.sh, 保持默认
+  template:
+    src: hadoop-env.sh.j2
+    dest: "{{hadoop_config_dir}}/hadoop-env.sh"
+
+- name: 配置 core-site.xml, 指定hdfs的namenode的host地址, 指定hadoop临时目录
+  template:
+    src: core-site.xml.j2
+    dest: "{{hadoop_config_dir}}/core-site.xml"
+
+- name: 配置 hdfs-site.xml, 指定HDFS副本的数量, 指定 secondarynod 的地址
+  template:
+    src: hdfs-site.xml.j2
+    dest: "{{hadoop_config_dir}}/hdfs-site.xml"
+
+- name: 配置 mapred-site.xml, 指定mr运行在yarn上, 指定 resourcemanager 的 host 地址, 指定 jobhistory 的 host 地址
+  template:
+    src: mapred-site.xml.j2
+    dest: "{{hadoop_config_dir}}/mapred-site.xml"
+
+- name: 配置 yarn-site.xml, 指定 ResourceManager 的地址， 指定 reducer获取数据的方式
+  template:
+      src: yarn-site.xml.j2
+      dest: "{{hadoop_config_dir}}/yarn-site.xml"
+
+- name: 配置 workers， 过去版本名为 slaves
+  template:
+    src: workers.j2
+    dest: "{{hadoop_config_dir}}/workers"
+
+- name: 格式化 active namenode hdfs
+  shell: /usr/local/hadoop/bin/hdfs namenode -format
+  when: namenode=='yes'
+  args:
+     executable: /bin/bash
+
+- name: 启动 hdfs
+  shell: "source {{ env_file }} &&/usr/local/hadoop/sbin/start-dfs.sh"
+  when: namenode=='yes'
+  args:
+    executable: /bin/bash
+
+- name: 启动 yarn
+  shell: "source {{ env_file }} && /usr/local/hadoop/sbin/start-yarn.sh"
+  when: resourcemanager=='yes'
+  args:
+    executable: /bin/bash
+
+#- name: 启动 historyserver
+#  shell: "source {{ env_file }} && /usr/local/hadoop/bin/mapred --daemon start historyserver"
+#  when: resourcemanager=='yes'
+#  args:
+#    executable: /bin/bash

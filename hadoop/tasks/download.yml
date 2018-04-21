@@ -1,0 +1,23 @@
+---
+# tasks file for ./hadoop
+# 把文件下载到本地
+- name: 判断 hadoop 源文件是否已经下载好了
+  command: ls {{ hadoop_download_dest }}
+  ignore_errors: true
+  register: file_exist
+  connection: local
+
+- name: 下载文件
+  get_url:
+    url: "{{ hadoop_download_url}}"
+    dest: "{{ hadoop_download_dest }}"
+    force: yes
+  when: file_exist|failed
+  connection: local
+
+# 解压到远程服务器的安装目录
+- name: 解压
+  unarchive:
+    src: "{{ hadoop_download_dest }}"
+    dest: "{{ install_dir }}"
+  become: true

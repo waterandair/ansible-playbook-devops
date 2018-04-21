@@ -1,0 +1,44 @@
+---
+# defaults file for hadoop
+# 版本
+hadoop_version: 3.1.0
+# 下载地址
+hadoop_download_url: "http://mirrors.shu.edu.cn/apache/hadoop/common/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz"
+# 下载到本地的 ~/Downloads
+hadoop_download_dest: ~/Downloads/hadoop-{{ hadoop_version }}.tar.gz
+# 安装目录
+install_dir: /usr/local/
+# 软连接地址
+soft_dir: "{{ install_dir }}hadoop"
+# 设置环境变量的文件
+env_file: /etc/profile
+# hadoop 配置文件地址
+hadoop_config_dir: /usr/local/hadoop/etc/hadoop
+# hdfs 副本数量
+dfs_replication: 1
+# hdfs 的 namenode 地址
+namenode_host: namenode.com:9000
+# secondary_node 地址
+secondarynode_host: secondarynode.com:9001
+# resourcemanager 地址
+resourcemanager_host: resourcemanager.com
+# jobhistory 地址
+jobhistory_web: resourcemanager.com:19888
+jobhistory_address: resourcemanager.com:10020
+# worker 地址
+worker_hosts:
+ - worker-01.com
+ - worker-02.com
+
+# 参考 /etc/hosts 文件配置
+#127.0.0.1 localhost
+#172.17.0.2 namenode.com resourcemanager.com
+#172.17.0.3 secondarynode.com worker-01.com
+#172.17.0.4 worker-02.com
+
+JAVA_HOME: /usr/local/java
+HADOOP_HOME: /usr/local/hadoop
+
+# 默认把所有节点的 namenode 和 resourcemanager 设置为no， 在 hosts 文件中把 namenode, resourcemanager 节点的该值设置为 yes
+namenode: no
+resourcemanager: no

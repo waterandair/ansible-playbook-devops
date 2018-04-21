@@ -1,0 +1,6 @@
+---
+# tasks file for hadoop
+##
+- import_tasks: download.yml
+#####
+- import_tasks: init.yml
