@@ -24,4 +24,4 @@ run.yml
 ansible-playbook -i hosts run.yml -k
 ```
 
-##### [详细介绍](http://waterandair.top/2018/03/22/install-jdk)
+##### [详细介绍](http://waterandair.top/install-jdk)

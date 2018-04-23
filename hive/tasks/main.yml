@@ -1,6 +1,6 @@
 ---
 # tasks file for hive
 #
-# - import_tasks: download.yml
+ - import_tasks: download.yml
 ####
  - import_tasks: init.yml

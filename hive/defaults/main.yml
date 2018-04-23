@@ -1,5 +1,5 @@
 ---
-# defaults file for zookeeper
+# defaults file for hvie
 # 版本
 hive_version: 2.3.3
 # 下载地址

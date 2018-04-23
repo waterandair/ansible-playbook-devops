@@ -4,8 +4,8 @@ hosts
 ```
 # eg.
 [test]
-172.17.0.2 id=1
-172.17.0.3 id-2
+172.17.0.2 id=1 namenode=yes resourcemanager=yes hive=yes
+172.17.0.3 id=2
 172.17.0.4 id=3
 ```
 ##### 2. 配置 ../ run.yml
@@ -15,7 +15,7 @@ run.yml
 - hosts: test
   remote_user: root
   roles:
-    - zookeeper
+    - hive
 ```
 ##### 3. 执行  
 
@@ -24,4 +24,4 @@ run.yml
 ansible-playbook -i hosts run.yml -k
 ```
 
-##### [详细介绍](http://waterandair.top/install-zookeeper.html)
+##### [详细介绍](http://waterandair.top/install-hive.html)

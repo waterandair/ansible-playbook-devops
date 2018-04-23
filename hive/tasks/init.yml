@@ -1,67 +1,67 @@
 ---
-#- name: 创建软连接
-#  file:
-#    src: "{{ install_dir + 'apache-hive-' + hive_version + '-bin'}}"
-#    dest: "{{ soft_dir }}"
-#    state: link
-#
-#- name: 设置 hive 环境变量
-#  lineinfile:
-#    dest: "{{env_file}}"
-#    insertafter: "{{item.position}}"
-#    line: "{{item.value}}"
-#    state: present
-#  with_items:
-#  - {position: EOF, value: "\n"}
-#  - {position: EOF, value: "# hive environment"}
-#  - {position: EOF, value: "export HIVE_HOME=/usr/local/hive"}
-#  - {position: EOF, value: "export PATH=$PATH:${HIVE_HOME}/bin"}
-#
-## 创建 /tmp 和 /user/hive/warehouse (必须提前启动好 hadoop)
-#- name: 创建 /tmp
-#  shell: /usr/local/hadoop/bin/hadoop fs -mkdir /tmp
-#  args:
-#    executable: /bin/bash
-#  when: hive == 'yes'
-#
-#- name: 创建 /user/hive/warehouse
-#  shell: /usr/local/hadoop/bin/hadoop fs -mkdir -p /user/hive/warehouse
-#  args:
-#    executable: /bin/bash
-#  when: hive == 'yes'
-#
-#- name: 为 /tmp 添加权限
-#  shell: /usr/local/hadoop/bin/hadoop fs -chmod g+w /tmp
-#  args:
-#    executable: /bin/bash
-#  when: hive == 'yes'
-#
-#- name: 为 /user/hive/warehouse 添加权限
-#  shell: /usr/local/hadoop/bin/hadoop fs -chmod g+w /user/hive/warehouse
-#  args:
-#    executable: /bin/bash
-#  when: hive == 'yes'
-#
-#- name: 配置 hive-site.xml, 主要包括 metadata 的 mysql地址， hiveserver 地址， Thrift 地址
-#  template:
-#    src: hive-site.xml.j2
-#    dest: "{{ hive_conf_dir }}hive-site.xml"
-#
-#- name: 配置 llap-cli-log4j2.properties
-#  template:
-#    src: llap-cli-log4j2.properties.j2
-#    dest: "{{ hive_conf_dir }}llap-cli-log4j2.properties"
-#
-#- name: 配置 hive-log4j2.properties, 日志地址， 日志级别
-#  template:
-#    src: hive-log4j2.properties.j2
-#    dest: "{{ hive_conf_dir }}hive-log4j2.properties"
-#
-#- name: 初始化 metadata
-#  shell: "source /etc/profile && schematool -dbType mysql -initSchema"
-#  when: hive == 'yes'
-#  args:
-#    executable: /bin/bash
+- name: 创建软连接
+  file:
+    src: "{{ install_dir + 'apache-hive-' + hive_version + '-bin'}}"
+    dest: "{{ soft_dir }}"
+    state: link
+
+- name: 设置 hive 环境变量
+  lineinfile:
+    dest: "{{env_file}}"
+    insertafter: "{{item.position}}"
+    line: "{{item.value}}"
+    state: present
+  with_items:
+  - {position: EOF, value: "\n"}
+  - {position: EOF, value: "# hive environment"}
+  - {position: EOF, value: "export HIVE_HOME=/usr/local/hive"}
+  - {position: EOF, value: "export PATH=$PATH:${HIVE_HOME}/bin"}
+
+# 创建 /tmp 和 /user/hive/warehouse (必须提前启动好 hadoop)
+- name: 创建 /tmp
+  shell: /usr/local/hadoop/bin/hadoop fs -mkdir /tmp
+  args:
+    executable: /bin/bash
+  when: hive == 'yes'
+
+- name: 创建 /user/hive/warehouse
+  shell: /usr/local/hadoop/bin/hadoop fs -mkdir -p /user/hive/warehouse
+  args:
+    executable: /bin/bash
+  when: hive == 'yes'
+
+- name: 为 /tmp 添加权限
+  shell: /usr/local/hadoop/bin/hadoop fs -chmod g+w /tmp
+  args:
+    executable: /bin/bash
+  when: hive == 'yes'
+
+- name: 为 /user/hive/warehouse 添加权限
+  shell: /usr/local/hadoop/bin/hadoop fs -chmod g+w /user/hive/warehouse
+  args:
+    executable: /bin/bash
+  when: hive == 'yes'
+
+- name: 配置 hive-site.xml, 主要包括 metadata 的 mysql地址， hiveserver 地址， Thrift 地址
+  template:
+    src: hive-site.xml.j2
+    dest: "{{ hive_conf_dir }}hive-site.xml"
+
+- name: 配置 llap-cli-log4j2.properties
+  template:
+    src: llap-cli-log4j2.properties.j2
+    dest: "{{ hive_conf_dir }}llap-cli-log4j2.properties"
+
+- name: 配置 hive-log4j2.properties, 日志地址， 日志级别
+  template:
+    src: hive-log4j2.properties.j2
+    dest: "{{ hive_conf_dir }}hive-log4j2.properties"
+
+- name: 初始化 metadata
+  shell: "source /etc/profile && schematool -dbType mysql -initSchema"
+  when: hive == 'yes'
+  args:
+    executable: /bin/bash
 
 - name: 启动metaStore服务
   shell: "source {{ env_file }} && nohup /usr/local/hive/bin/hive --service metastore 1>2&"
